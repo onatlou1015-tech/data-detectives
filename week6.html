@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 6 — Connecting Tables (Simple JOIN)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 45px 40px;
+      text-align: center;
+    }
+
+    header .week-label {
+      color: #F3D3A7;
+      font-size: 0.95em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    header .subtitle {
+      color: #F3D3A7;
+      font-size: 1em;
+    }
+
+    /* Content sections */
+    section {
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    h3 {
+      color: #C88561;
+      font-size: 1.1em;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #2B2018;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+      color: #2B2018;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Welcome box */
+    .welcome {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Learning Outcomes box */
+    .outcomes {
+      background: #F3D3A7;
+      border: 3px solid #C88561;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 10px;
+    }
+
+    .outcomes h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.15em;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: #A7C1C3;
+      border-radius: 8px;
+      border-left: 5px solid #AA93B8;
+    }
+
+    .outcome-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bloom-tag {
+      display: inline-block;
+      background: #AA93B8;
+      color: #F3D3A7;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .bloom-tag.evaluate {
+      background: #C88561;
+    }
+
+    .bloom-tag.create {
+      background: #2B2018;
+    }
+
+    .bloom-tag.analyze {
+      background: #AA93B8;
+    }
+
+    .bloom-tag.apply {
+      background: #E1B86E;
+    }
+
+    .outcome-text {
+      color: #2B2018;
+      font-size: 0.95em;
+    }
+
+    /* Goal box */
+    .goal {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .goal ul {
+      margin-bottom: 0;
+    }
+
+    /* Code box */
+    .code-box {
+      background: #2B2018;
+      color: #F3D3A7;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      border: 2px solid #C88561;
+    }
+
+    .code-box .code-label {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .code-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #F3D3A7;
+    }
+
+    .code-box .keyword {
+      color: #E1B86E;
+      font-weight: bold;
+    }
+
+    .code-box .value {
+      color: #A7C1C3;
+    }
+
+    .code-box .comment {
+      color: #AA93B8;
+      font-style: italic;
+    }
+
+    /* Real-life examples */
+    .example-box {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 15px;
+    }
+
+    .example-box h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .example-box p {
+      margin-bottom: 6px;
+    }
+
+    .example-box .where {
+      color: #C88561;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    /* Tip box */
+    .tip {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-style: italic;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #F3D3A7;
+      border-left: 5px solid #2B2018;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.95em;
+    }
+
+    th {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #C88561;
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid #E1B86E;
+      color: #2B2018;
+    }
+
+    tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    tr:hover td {
+      background: #E1B86E;
+    }
+
+    /* Check yourself */
+    .check {
+      background: #F3D3A7;
+      border: 2px dashed #C88561;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .check ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: #C88561;
+      font-weight: bold;
+    }
+
+    /* Teacher instructions */
+    .teacher-instructions {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 30px 40px;
+    }
+
+    .teacher-instructions h2 {
+      color: #F3D3A7;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .teacher-instructions ul {
+      margin-left: 25px;
+      color: #F3D3A7;
+    }
+
+    .teacher-instructions li {
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 25px 40px;
+      background: #E1B86E;
+      border-top: 3px solid #C88561;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #F3D3A7;
+      color: #2B2018;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      border: 2px solid #C88561;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #C88561;
+      color: #F3D3A7;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-left: auto;
+    }
+
+    .next-btn:hover {
+      background: #AA93B8;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      section, .teacher-instructions { padding: 22px; }
+      .outcome-item { flex-direction: column; }
+      .nav-buttons {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .next-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="week-label">Week 6</div>
+      <h1>Connecting Tables (Simple JOIN)</h1>
+      <div class="subtitle">How real databases link tables</div>
+    </header>
+
+    <!-- Welcome -->
+    <section>
+      <h2>Welcome Back!</h2>
+      <div class="welcome">
+        <p>So far, you've worked with one table at a time. But real databases use <strong>many tables</strong> that are linked together.</p>
+        <p>For example: students are in one table, subjects in another, and scores in a third. To answer "Who scored highest in Math?" you need to <strong>join</strong> the tables.</p>
+        <p>This week, you'll learn <strong>JOIN</strong> — one of the most powerful SQL skills. It's how real apps combine data from multiple sources.</p>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes (Bloom's Taxonomy HOTS) -->
+    <section>
+      <h2>Learning Outcomes</h2>
+      <p>By the end of this week, you will be able to:</p>
+
+      <div class="outcomes">
+        <h3>Higher Order Thinking Skills (HOTS)</h3>
+
+        <div class="outcome-item">
+          <span class="bloom-tag analyze">ANALYZE</span>
+          <span class="outcome-text">Examine how two tables are linked through primary keys and foreign keys, and explain why splitting data into multiple tables reduces repetition.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag create">CREATE</span>
+          <span class="outcome-text">Construct SQL queries that use JOIN to combine data from two related tables and answer real questions about students, scores, and subjects.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag evaluate">EVALUATE</span>
+          <span class="outcome-text">Judge which JOIN query best answers a given real-world question (e.g., top scorers, subject averages) and justify the choice of columns and tables.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Multiple Tables -->
+    <section>
+      <h2>Why Do We Split Data Into Multiple Tables?</h2>
+      <p>Imagine putting everything in one table — students, subjects, scores, teachers. Every row would repeat the same names again and again.</p>
+      <p>Instead, we split data into <strong>related tables</strong>:</p>
+      <ul>
+        <li><strong>students</strong> — names, grades, sections</li>
+        <li><strong>subjects</strong> — subject names, teachers</li>
+        <li><strong>scores</strong> — links a student to a subject with a score</li>
+      </ul>
+      <div class="tip">
+        Fewer repetitions, fewer mistakes. That's why real databases use multiple linked tables.
+      </div>
+    </section>
+
+    <!-- Primary and Foreign Keys -->
+    <section>
+      <h2>Primary Keys and Foreign Keys</h2>
+      <p>To link tables, each table has a <strong>primary key</strong> — a unique ID for each row. Other tables use that ID as a <strong>foreign key</strong>.</p>
+
+      <table>
+        <tr>
+          <th>Term</th>
+          <th>What It Means</th>
+          <th>Example</th>
+        </tr>
+        <tr><td><strong>Primary Key</strong></td><td>Unique ID for each row in a table</td><td><code>students.id</code></td></tr>
+        <tr><td><strong>Foreign Key</strong></td><td>A column that points to a primary key in another table</td><td><code>scores.student_id</code></td></tr>
+      </table>
+
+      <p>In our database:</p>
+      <ul>
+        <li><code>scores.student_id</code> points to <code>students.id</code></li>
+        <li><code>scores.subject_id</code> points to <code>subjects.id</code></li>
+        <li><code>canteen_sales.item_id</code> points to <code>canteen_items.id</code></li>
+      </ul>
+    </section>
+
+    <!-- What is JOIN -->
+    <section>
+      <h2>What is JOIN?</h2>
+      <p><strong>JOIN</strong> combines rows from two tables based on a related column. It's like matching two lists — you find rows that share the same ID.</p>
+
+      <h3>The Basic Form</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> column1, column2
+<span class="keyword">FROM</span> table1
+<span class="keyword">JOIN</span> table2 <span class="keyword">ON</span> table1.id = table2.foreign_id;</pre>
+      </div>
+
+      <div class="tip">
+        <strong>How to read it:</strong> "Show me columns, from table1, joined with table2, where the ID matches."
+      </div>
+    </section>
+
+    <!-- First JOIN -->
+    <section>
+      <h2>Your First JOIN: Students and Scores</h2>
+      <p>Let's combine <code>students</code> and <code>scores</code> to see each student's name next to their score.</p>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, scores.score
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id;</pre>
+      </div>
+
+      <p>This returns every student's name paired with each of their scores.</p>
+
+      <div class="warning">
+        <strong>Don't forget the ON clause.</strong> Without it, SQL doesn't know how the tables are connected.
+      </div>
+    </section>
+
+    <!-- JOIN with Three Tables -->
+    <section>
+      <h2>JOIN with Three Tables</h2>
+      <p>You can join more than two tables. Let's add <code>subjects</code> so we can see student names, subject names, and scores.</p>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, subjects.name <span class="keyword">AS</span> subject, scores.score
+<span class="keyword">FROM</span> scores
+<span class="keyword">JOIN</span> students <span class="keyword">ON</span> scores.student_id = students.id
+<span class="keyword">JOIN</span> subjects <span class="keyword">ON</span> scores.subject_id = subjects.id;</pre>
+      </div>
+
+      <p>Now you can see: "Juan Dela Cruz — Mathematics — 88".</p>
+
+      <div class="tip">
+        Use <code>AS</code> to rename columns when two tables have the same column name (like both having <code>name</code>).
+      </div>
+    </section>
+
+    <!-- JOIN with WHERE -->
+    <section>
+      <h2>JOIN with WHERE</h2>
+      <p>Filter the joined result with WHERE just like before.</p>
+
+      <h3>Find scores above 90</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, scores.score
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id
+<span class="keyword">WHERE</span> scores.score &gt; 90;</pre>
+      </div>
+
+      <h3>Find Grade 10 students' Math scores</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, scores.score
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id
+<span class="keyword">WHERE</span> students.grade = 10 <span class="keyword">AND</span> scores.subject_id = 1;</pre>
+      </div>
+    </section>
+
+    <!-- JOIN with GROUP BY and ORDER BY -->
+    <section>
+      <h2>JOIN with GROUP BY and ORDER BY</h2>
+      <p>Combine JOIN with the other tools you've learned to build powerful reports.</p>
+
+      <h3>Average score per subject</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> subjects.name <span class="keyword">AS</span> subject, <span class="keyword">AVG</span>(scores.score) <span class="keyword">AS</span> avg_score
+<span class="keyword">FROM</span> scores
+<span class="keyword">JOIN</span> subjects <span class="keyword">ON</span> scores.subject_id = subjects.id
+<span class="keyword">GROUP BY</span> subjects.name
+<span class="keyword">ORDER BY</span> avg_score <span class="keyword">DESC</span>;</pre>
+      </div>
+
+      <h3>Top 5 students by total score</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, <span class="keyword">SUM</span>(scores.score) <span class="keyword">AS</span> total
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id
+<span class="keyword">GROUP BY</span> students.name
+<span class="keyword">ORDER BY</span> total <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 5;</pre>
+      </div>
+
+      <div class="tip">
+        Notice how JOIN is followed by GROUP BY, then ORDER BY, then LIMIT — the same clause order you learned in Week 5.
+      </div>
+    </section>
+
+    <!-- Real Life Examples -->
+    <section>
+      <h2>Real-Life Examples</h2>
+
+      <div class="example-box">
+        <h3>📱 Social Media</h3>
+        <p>Show each user's name next to their post titles:</p>
+        <p class="where">SELECT users.name, posts.title FROM posts JOIN users ON posts.user_id = users.id;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🛒 Online Shopping</h3>
+        <p>Show each order's product name and quantity:</p>
+        <p class="where">SELECT products.name, order_items.quantity FROM order_items JOIN products ON order_items.product_id = products.id;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏫 School Records</h3>
+        <p>Show each student's name with their subject scores:</p>
+        <p class="where">SELECT students.name, subjects.name, scores.score FROM scores JOIN students ON scores.student_id = students.id JOIN subjects ON scores.subject_id = subjects.id;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏥 Hospital System</h3>
+        <p>Show each patient's name with their doctor's name:</p>
+        <p class="where">SELECT patients.name, doctors.name FROM appointments JOIN patients ON appointments.patient_id = patients.id JOIN doctors ON appointments.doctor_id = doctors.id;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏦 Banking</h3>
+        <p>Show each customer's name with their account balance:</p>
+        <p class="where">SELECT customers.name, accounts.balance FROM accounts JOIN customers ON accounts.customer_id = customers.id;</p>
+      </div>
+    </section>
+
+    <!-- Key Terms -->
+    <section>
+      <h2>Key Words to Remember</h2>
+      <table>
+        <tr>
+          <th>Term</th>
+          <th>What It Means</th>
+        </tr>
+        <tr><td>JOIN</td><td>Combines rows from two or more tables</td></tr>
+        <tr><td>ON</td><td>Specifies how tables are linked</td></tr>
+        <tr><td>Primary Key</td><td>Unique ID for each row in a table</td></tr>
+        <tr><td>Foreign Key</td><td>A column pointing to a primary key in another table</td></tr>
+        <tr><td>Relationship</td><td>A link between two tables through keys</td></tr>
+        <tr><td>Alias</td><td>A short name for a table or column (using AS)</td></tr>
+      </table>
+    </section>
+
+    <!-- Practice Section -->
+    <section>
+      <h2>Try It Yourself</h2>
+      <p>Open phpMyAdmin and use the <code>data_detectives</code> database. Try each query below in the SQL tab.</p>
+
+      <h3>Practice 1: Student name and score</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, scores.score
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id;</pre>
+      </div>
+
+      <h3>Practice 2: Only scores above 90</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, scores.score
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id
+<span class="keyword">WHERE</span> scores.score &gt; 90;</pre>
+      </div>
+
+      <h3>Practice 3: Student name, subject, and score</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, subjects.name <span class="keyword">AS</span> subject, scores.score
+<span class="keyword">FROM</span> scores
+<span class="keyword">JOIN</span> students <span class="keyword">ON</span> scores.student_id = students.id
+<span class="keyword">JOIN</span> subjects <span class="keyword">ON</span> scores.subject_id = subjects.id;</pre>
+      </div>
+
+      <h3>Practice 4: Average score per subject</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> subjects.name <span class="keyword">AS</span> subject, <span class="keyword">AVG</span>(scores.score) <span class="keyword">AS</span> avg_score
+<span class="keyword">FROM</span> scores
+<span class="keyword">JOIN</span> subjects <span class="keyword">ON</span> scores.subject_id = subjects.id
+<span class="keyword">GROUP BY</span> subjects.name
+<span class="keyword">ORDER BY</span> avg_score <span class="keyword">DESC</span>;</pre>
+      </div>
+
+      <h3>Practice 5: Top 5 students by total score</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, <span class="keyword">SUM</span>(scores.score) <span class="keyword">AS</span> total
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id
+<span class="keyword">GROUP BY</span> students.name
+<span class="keyword">ORDER BY</span> total <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 5;</pre>
+      </div>
+
+      <h3>Practice 6: Grade 10 students' Math scores</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> students.name, scores.score
+<span class="keyword">FROM</span> students
+<span class="keyword">JOIN</span> scores <span class="keyword">ON</span> students.id = scores.student_id
+<span class="keyword">WHERE</span> students.grade = 10 <span class="keyword">AND</span> scores.subject_id = 1;</pre>
+      </div>
+
+      <div class="tip">
+        Try joining canteen_sales with canteen_items to see item names next to quantity sold.
+      </div>
+    </section>
+
+    <!-- Check Yourself -->
+    <section>
+      <h2>Check Yourself</h2>
+      <p>Before you finish, make sure you can do all of these:</p>
+      <div class="check">
+        <ul>
+          <li>I can explain why data is split into multiple tables</li>
+          <li>I know what primary and foreign keys are</li>
+          <li>I can write a simple <code>JOIN</code> between two tables</li>
+          <li>I can join three tables in one query</li>
+          <li>I can combine <code>JOIN</code> with <code>WHERE</code>, <code>GROUP BY</code>, <code>ORDER BY</code>, and <code>LIMIT</code></li>
+          <li>I can explain why JOIN matters in real life</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Quick Check -->
+    <section>
+      <h2>Quick Check</h2>
+      <p>Answer these in your head or on paper:</p>
+      <ol>
+        <li>What does <code>JOIN</code> do?</li>
+        <li>What's the difference between a primary key and a foreign key?</li>
+        <li>Why does JOIN need an <code>ON</code> clause?</li>
+        <li>How would you join three tables?</li>
+        <li>Write a query to show each student's name with their score.</li>
+      </ol>
+    </section>
+
+    <!-- Teacher Instructions -->
+    <div class="teacher-instructions">
+      <h2>Teacher Instructions</h2>
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+        <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="week5.html" class="back-btn">&larr; Back: Week 5</a>
+      <a href="week7.html" class="next-btn">Next: Real-Life SQL Project &rarr;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 7 — Real-Life SQL Project</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 45px 40px;
+      text-align: center;
+    }
+
+    header .week-label {
+      color: #F3D3A7;
+      font-size: 0.95em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    header .subtitle {
+      color: #F3D3A7;
+      font-size: 1em;
+    }
+
+    /* Content sections */
+    section {
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    h3 {
+      color: #C88561;
+      font-size: 1.1em;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #2B2018;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+      color: #2B2018;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Welcome box */
+    .welcome {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Learning Outcomes box */
+    .outcomes {
+      background: #F3D3A7;
+      border: 3px solid #C88561;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 10px;
+    }
+
+    .outcomes h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.15em;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: #A7C1C3;
+      border-radius: 8px;
+      border-left: 5px solid #AA93B8;
+    }
+
+    .outcome-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bloom-tag {
+      display: inline-block;
+      background: #AA93B8;
+      color: #F3D3A7;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .bloom-tag.evaluate {
+      background: #C88561;
+    }
+
+    .bloom-tag.create {
+      background: #2B2018;
+    }
+
+    .bloom-tag.analyze {
+      background: #AA93B8;
+    }
+
+    .bloom-tag.apply {
+      background: #E1B86E;
+    }
+
+    .outcome-text {
+      color: #2B2018;
+      font-size: 0.95em;
+    }
+
+    /* Code box */
+    .code-box {
+      background: #2B2018;
+      color: #F3D3A7;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      border: 2px solid #C88561;
+    }
+
+    .code-box .code-label {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .code-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #F3D3A7;
+    }
+
+    .code-box .keyword {
+      color: #E1B86E;
+      font-weight: bold;
+    }
+
+    .code-box .value {
+      color: #A7C1C3;
+    }
+
+    .code-box .comment {
+      color: #AA93B8;
+      font-style: italic;
+    }
+
+    /* Step boxes */
+    .step {
+      background: #E1B86E;
+      border-radius: 8px;
+      padding: 16px 22px;
+      margin: 14px 0;
+      border-left: 5px solid #C88561;
+    }
+
+    .step strong {
+      color: #2B2018;
+    }
+
+    /* Tip box */
+    .tip {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-style: italic;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #F3D3A7;
+      border-left: 5px solid #2B2018;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.95em;
+    }
+
+    th {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #C88561;
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid #E1B86E;
+      color: #2B2018;
+    }
+
+    tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    tr:hover td {
+      background: #E1B86E;
+    }
+
+    /* Check yourself */
+    .check {
+      background: #F3D3A7;
+      border: 2px dashed #C88561;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .check ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: #C88561;
+      font-weight: bold;
+    }
+
+    /* Rubric */
+    .rubric-section {
+      background: #F3D3A7;
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    .rubric-section h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .rubric-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.85em;
+    }
+
+    .rubric-table th {
+      background: #2B2018;
+      color: #F3D3A7;
+      padding: 12px 10px;
+      text-align: left;
+      border: 1px solid #C88561;
+      font-size: 0.9em;
+    }
+
+    .rubric-table td {
+      padding: 12px 10px;
+      border: 1px solid #C88561;
+      color: #2B2018;
+      vertical-align: top;
+    }
+
+    .rubric-table tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    .rubric-table tr:hover td {
+      background: #E1B86E;
+    }
+
+    .rubric-total {
+      background: #2B2018;
+      color: #F3D3A7;
+      padding: 16px 24px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.15em;
+      font-weight: 600;
+      margin-top: 20px;
+    }
+
+    .rubric-total span {
+      color: #E1B86E;
+    }
+
+    /* Teacher instructions */
+    .teacher-instructions {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 30px 40px;
+    }
+
+    .teacher-instructions h2 {
+      color: #F3D3A7;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .teacher-instructions ul {
+      margin-left: 25px;
+      color: #F3D3A7;
+    }
+
+    .teacher-instructions li {
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 25px 40px;
+      background: #E1B86E;
+      border-top: 3px solid #C88561;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #F3D3A7;
+      color: #2B2018;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      border: 2px solid #C88561;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #C88561;
+      color: #F3D3A7;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-left: auto;
+    }
+
+    .next-btn:hover {
+      background: #AA93B8;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      section, .teacher-instructions, .rubric-section { padding: 22px; }
+      .outcome-item { flex-direction: column; }
+      .nav-buttons {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .next-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+      }
+      .rubric-table { font-size: 0.75em; }
+      .rubric-table th, .rubric-table td { padding: 8px 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="week-label">Week 7</div>
+      <h1>Real-Life SQL Project</h1>
+      <div class="subtitle">Solving a real problem with SQL</div>
+    </header>
+
+    <!-- Welcome -->
+    <section>
+      <h2>Welcome to the Final Week!</h2>
+      <div class="welcome">
+        <p>You've learned tables, queries, aggregates, grouping, sorting, and joins. Now it's time to put it all together in <strong>your own project</strong>.</p>
+        <p>This week, you will <strong>design your own database</strong> to solve a real problem. Your teacher will give you a set of data, and you will decide how to organize it, query it, and present your findings.</p>
+        <p>This is what real data analysts do every day — turn raw data into insight that helps people make decisions.</p>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes (Bloom's Taxonomy HOTS) -->
+    <section>
+      <h2>Learning Outcomes</h2>
+      <p>By the end of this week, you will be able to:</p>
+
+      <div class="outcomes">
+        <h3>Higher Order Thinking Skills (HOTS)</h3>
+
+        <div class="outcome-item">
+          <span class="bloom-tag create">CREATE</span>
+          <span class="outcome-text">Design and build your own database from a given dataset — deciding on tables, columns, keys, and relationships that best fit the data.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag analyze">ANALYZE</span>
+          <span class="outcome-text">Analyze the given data to identify meaningful questions and write SQL queries that reveal patterns, rankings, and summaries.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag evaluate">EVALUATE</span>
+          <span class="outcome-text">Evaluate your own design and findings — justify your table structure, query choices, and explain the value your database brings to a real-life scenario.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- What You'll Do -->
+    <section>
+      <h2>What You'll Do This Week</h2>
+      <p>You will complete a <strong>project</strong> that combines everything you've learned. It has four parts:</p>
+
+      <div class="step">
+        <strong>1. Design Your Database</strong>
+        <p>Decide which tables and columns you need. Plan before you type.</p>
+      </div>
+
+      <div class="step">
+        <strong>2. Import the Given Data</strong>
+        <p>Your teacher will give you a dataset. Import it into your database or type the SQL to create the tables.</p>
+      </div>
+
+      <div class="step">
+        <strong>3. Write Meaningful Queries</strong>
+        <p>Answer at least 5 real questions using SELECT, WHERE, COUNT/AVG/SUM, GROUP BY, ORDER BY, LIMIT, and JOIN.</p>
+      </div>
+
+      <div class="step">
+        <strong>4. Present Your Project</strong>
+        <p>Show your database, run your queries live, and explain the value your design brings.</p>
+      </div>
+
+      <div class="tip">
+        This is your chance to be the analyst. Don't copy the sample queries — think about what questions <em>your</em> data can answer.
+      </div>
+    </section>
+
+    <!-- Example Project Ideas -->
+    <section>
+      <h2>Project Ideas</h2>
+      <p>Here are sample themes your teacher might assign. Each one uses multiple tables and real questions.</p>
+
+      <table>
+        <tr>
+          <th>Theme</th>
+          <th>Tables You'll Design</th>
+          <th>Sample Questions</th>
+        </tr>
+        <tr>
+          <td>Canteen Sales</td>
+          <td>items, sales</td>
+          <td>Best seller? Total revenue? Sales per day?</td>
+        </tr>
+        <tr>
+          <td>Library Borrowing</td>
+          <td>books, students, borrows</td>
+          <td>Most borrowed? Overdue books? Active borrowers?</td>
+        </tr>
+        <tr>
+          <td>Class Attendance</td>
+          <td>students, attendance</td>
+          <td>Most absences? Attendance per section?</td>
+        </tr>
+        <tr>
+          <td>Recycling Log</td>
+          <td>classes, waste</td>
+          <td>Which class recycles most? Total per material?</td>
+        </tr>
+        <tr>
+          <td>Quiz Analytics</td>
+          <td>students, subjects, scores</td>
+          <td>Class average? Top scorers? Subject difficulty?</td>
+        </tr>
+      </table>
+
+      <div class="warning">
+        Your teacher will give you the actual dataset. Your job is to <strong>decide how to organize it</strong> and <strong>what questions to ask</strong>.
+      </div>
+    </section>
+
+    <!-- Step 1: Design -->
+    <section>
+      <h2>Step 1: Design Your Database</h2>
+      <p>Before you write a single line of SQL, plan your design on paper.</p>
+
+      <h3>Ask yourself:</h3>
+      <ul>
+        <li>What are the main <strong>things</strong> in my data? (students, items, sales)</li>
+        <li>What <strong>columns</strong> does each table need?</li>
+        <li>Which column is the <strong>primary key</strong>?</li>
+        <li>How do the tables <strong>connect</strong>? (foreign keys)</li>
+      </ul>
+
+      <h3>Sample ER diagram (as text)</h3>
+      <div class="code-box">
+        <span class="code-label">Design</span>
+        <pre>students
+  ├── id (PK)
+  ├── name
+  ├── grade
+  └── section
+
+subjects
+  ├── id (PK)
+  ├── name
+  └── teacher
+
+scores
+  ├── id (PK)
+  ├── student_id (FK → students.id)
+  ├── subject_id (FK → subjects.id)
+  └── score</pre>
+      </div>
+
+      <div class="tip">
+        Draw your design on paper first. A good design makes queries easy. A bad design makes everything hard.
+      </div>
+    </section>
+
+    <!-- Step 2: Build -->
+    <section>
+      <h2>Step 2: Build Your Tables</h2>
+      <p>Once your design is ready, create the tables in phpMyAdmin.</p>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">CREATE TABLE</span> students (
+  id <span class="keyword">INT AUTO_INCREMENT PRIMARY KEY</span>,
+  name <span class="keyword">VARCHAR</span>(50),
+  grade <span class="keyword">INT</span>,
+  section <span class="keyword">VARCHAR</span>(10)
+);</pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">CREATE TABLE</span> subjects (
+  id <span class="keyword">INT AUTO_INCREMENT PRIMARY KEY</span>,
+  name <span class="keyword">VARCHAR</span>(50),
+  teacher <span class="keyword">VARCHAR</span>(50)
+);</pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">CREATE TABLE</span> scores (
+  id <span class="keyword">INT AUTO_INCREMENT PRIMARY KEY</span>,
+  student_id <span class="keyword">INT</span>,
+  subject_id <span class="keyword">INT</span>,
+  score <span class="keyword">INT</span>,
+  <span class="keyword">FOREIGN KEY</span> (student_id) <span class="keyword">REFERENCES</span> students(id),
+  <span class="keyword">FOREIGN KEY</span> (subject_id) <span class="keyword">REFERENCES</span> subjects(id)
+);</pre>
+      </div>
+
+      <div class="tip">
+        Import the data your teacher gives you using phpMyAdmin's <strong>Import</strong> tab, or insert it with <code>INSERT INTO</code>.
+      </div>
+    </section>
+
+    <!-- Step 3: Query -->
+    <section>
+      <h2>Step 3: Write Meaningful Queries</h2>
+      <p>Your project must include <strong>at least 5 queries</strong> that answer real questions. Use a mix of skills you've learned.</p>
+
+      <h3>Required query types (at least one of each):</h3>
+      <ul>
+        <li>A <strong>SELECT with WHERE</strong> — filter rows</li>
+        <li>A <strong>COUNT, AVG, or SUM</strong> — summarize data</li>
+        <li>A <strong>GROUP BY</strong> — compare groups</li>
+        <li>An <strong>ORDER BY with LIMIT</strong> — rank results</li>
+        <li>A <strong>JOIN</strong> — combine two or more tables</li>
+      </ul>
+
+      <h3>Sample query set (Grade Analytics theme)</h3>
+      <div class="code-box">
+        <span class="code-label">Query 1 — Filter</span>
+        <pre><span class="keyword">SELECT</span> name, grade <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10;</pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">Query 2 — Summarize</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(score) <span class="keyword">AS</span> avg_score
+<span class="keyword">FROM</span> scores;</pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">Query 3 — Group</span>
+        <pre><span class="keyword">SELECT</span> subject_id, <span class="keyword">AVG</span>(score) <span class="keyword">AS</span> avg_score
+<span class="keyword">FROM</span> scores
+<span class="keyword">GROUP BY</span> subject_id;</pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">Query 4 — Rank</span>
+        <pre><span class="keyword">SELECT</span> student_id, <span class="keyword">SUM</span>(score) <span class="keyword">AS</span> total
+<span class="keyword">FROM</span> scores
+<span class="keyword">GROUP BY</span> student_id
+<span class="keyword">ORDER BY</span> total <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 5;</pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">Query 5 — Join</span>
+        <pre><span class="keyword">SELECT</span> students.name, subjects.name <span class="keyword">AS</span> subject, scores.score
+<span class="keyword">FROM</span> scores
+<span class="keyword">JOIN</span> students <span class="keyword">ON</span> scores.student_id = students.id
+<span class="keyword">JOIN</span> subjects <span class="keyword">ON</span> scores.subject_id = subjects.id;</pre>
+      </div>
+
+      <div class="tip">
+        Write a <strong>one-sentence explanation</strong> for each query — what question does it answer?
+      </div>
+    </section>
+
+    <!-- Step 4: Present -->
+    <section>
+      <h2>Step 4: Present Your Project</h2>
+      <p>On the final day, you'll present your project to the class in 3–5 minutes.</p>
+
+      <h3>What to include:</h3>
+      <ol>
+        <li><strong>Problem:</strong> What real-life problem does your database solve?</li>
+        <li><strong>Design:</strong> Show your tables and how they connect.</li>
+        <li><strong>Queries:</strong> Run at least 3 of your queries live.</li>
+        <li><strong>Findings:</strong> What did your data reveal?</li>
+        <li><strong>Value:</strong> Who benefits from your database?</li>
+      </ol>
+
+      <div class="tip">
+        Show your queries <strong>live</strong> in phpMyAdmin. It's more impressive than slides — and it shows real skill.
+      </div>
+    </section>
+
+    <!-- Submission Checklist -->
+    <section>
+      <h2>Submission Checklist</h2>
+      <p>Before you submit, make sure you have all of these:</p>
+      <div class="check">
+        <ul>
+          <li>A written design of your database (tables, columns, keys)</li>
+          <li>All tables created in phpMyAdmin</li>
+          <li>The provided data imported or inserted</li>
+          <li>At least 5 SQL queries saved in a text file or document</li>
+          <li>A one-sentence explanation for each query</li>
+          <li>Your presentation notes (3–5 minutes)</li>
+          <li>A short reflection on what you learned</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Quick Check -->
+    <section>
+      <h2>Quick Check</h2>
+      <p>Answer these before presenting:</p>
+      <ol>
+        <li>What problem does your database solve?</li>
+        <li>How many tables did you create, and how are they linked?</li>
+        <li>Which query are you most proud of, and why?</li>
+        <li>What did your data reveal that you didn't expect?</li>
+        <li>Who benefits from your database in real life?</li>
+      </ol>
+    </section>
+
+    <!-- Rubric -->
+    <div class="rubric-section">
+      <h2>Project Rubric</h2>
+      <p>Your final project will be graded using the rubric below. The highest possible score is <strong>50 points</strong>.</p>
+
+      <table class="rubric-table">
+        <tr>
+          <th>Criteria</th>
+          <th>Excellent (10)</th>
+          <th>Good (7)</th>
+          <th>Fair (4)</th>
+          <th>Needs Work (1)</th>
+        </tr>
+        <tr>
+          <td><strong>Database Design</strong></td>
+          <td>Tables, columns, and keys are well-planned, logical, and clearly documented.</td>
+          <td>Design is mostly logical with minor issues.</td>
+          <td>Design is incomplete or poorly organized.</td>
+          <td>No design or design does not match data.</td>
+        </tr>
+        <tr>
+          <td><strong>Table Creation &amp; Data Import</strong></td>
+          <td>All tables created correctly; provided data imported without errors.</td>
+          <td>Tables created; minor issues with data import.</td>
+          <td>Some tables missing or data incomplete.</td>
+          <td>Tables not created or data not imported.</td>
+        </tr>
+        <tr>
+          <td><strong>SQL Queries (5+ required)</strong></td>
+          <td>Queries are correct, varied, and meaningfully answer real questions. Uses SELECT, WHERE, aggregates, GROUP BY, ORDER BY, LIMIT, and JOIN.</td>
+          <td>Queries are correct but lack variety or depth.</td>
+          <td>Fewer than 5 queries or several are incorrect.</td>
+          <td>Queries missing or mostly incorrect.</td>
+        </tr>
+        <tr>
+          <td><strong>Presentation</strong></td>
+          <td>Clear, confident, well-organized presentation that explains the design, queries, findings, and value.</td>
+          <td>Clear presentation with minor gaps.</td>
+          <td>Presentation is unclear or incomplete.</td>
+          <td>No presentation or did not explain the project.</td>
+        </tr>
+        <tr>
+          <td><strong>Reflection &amp; Value</strong></td>
+          <td>Thoughtful reflection that clearly explains what was learned and how the database adds real value.</td>
+          <td>Reflection is present but brief.</td>
+          <td>Reflection is vague or missing key points.</td>
+          <td>No reflection submitted.</td>
+        </tr>
+      </table>
+
+      <div class="rubric-total">
+        Total Possible Score: <span>50 points</span>
+      </div>
+    </div>
+
+    <!-- Teacher Instructions -->
+    <div class="teacher-instructions">
+      <h2>Teacher Instructions</h2>
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+        <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="week6.html" class="back-btn">&larr; Back: Week 6</a>
+      <a href="index.html" class="next-btn">Finish: Back to Unit Index &rarr;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

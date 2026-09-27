@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 2 — Retrieving Data (SELECT and WHERE)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 45px 40px;
+      text-align: center;
+    }
+
+    header .week-label {
+      color: #F3D3A7;
+      font-size: 0.95em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    header .subtitle {
+      color: #F3D3A7;
+      font-size: 1em;
+    }
+
+    /* Content sections */
+    section {
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    h3 {
+      color: #C88561;
+      font-size: 1.1em;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #2B2018;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+      color: #2B2018;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Welcome box */
+    .welcome {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Learning Outcomes box */
+    .outcomes {
+      background: #F3D3A7;
+      border: 3px solid #C88561;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 10px;
+    }
+
+    .outcomes h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.15em;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: #A7C1C3;
+      border-radius: 8px;
+      border-left: 5px solid #AA93B8;
+    }
+
+    .outcome-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bloom-tag {
+      display: inline-block;
+      background: #AA93B8;
+      color: #F3D3A7;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .bloom-tag.evaluate {
+      background: #C88561;
+    }
+
+    .bloom-tag.create {
+      background: #2B2018;
+    }
+
+    .bloom-tag.analyze {
+      background: #AA93B8;
+    }
+
+    .bloom-tag.apply {
+      background: #E1B86E;
+    }
+
+    .outcome-text {
+      color: #2B2018;
+      font-size: 0.95em;
+    }
+
+    /* Goal box */
+    .goal {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .goal ul {
+      margin-bottom: 0;
+    }
+
+    /* Code box */
+    .code-box {
+      background: #2B2018;
+      color: #F3D3A7;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      border: 2px solid #C88561;
+    }
+
+    .code-box .code-label {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .code-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #F3D3A7;
+    }
+
+    .code-box .keyword {
+      color: #E1B86E;
+      font-weight: bold;
+    }
+
+    .code-box .value {
+      color: #A7C1C3;
+    }
+
+    .code-box .comment {
+      color: #AA93B8;
+      font-style: italic;
+    }
+
+    /* Real-life examples */
+    .example-box {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 15px;
+    }
+
+    .example-box h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .example-box p {
+      margin-bottom: 6px;
+    }
+
+    .example-box .where {
+      color: #C88561;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    /* Tip box */
+    .tip {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-style: italic;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #F3D3A7;
+      border-left: 5px solid #2B2018;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.95em;
+    }
+
+    th {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #C88561;
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid #E1B86E;
+      color: #2B2018;
+    }
+
+    tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    tr:hover td {
+      background: #E1B86E;
+    }
+
+    /* Check yourself */
+    .check {
+      background: #F3D3A7;
+      border: 2px dashed #C88561;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .check ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: #C88561;
+      font-weight: bold;
+    }
+
+    /* Teacher instructions */
+    .teacher-instructions {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 30px 40px;
+    }
+
+    .teacher-instructions h2 {
+      color: #F3D3A7;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .teacher-instructions ul {
+      margin-left: 25px;
+      color: #F3D3A7;
+    }
+
+    .teacher-instructions li {
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 25px 40px;
+      background: #E1B86E;
+      border-top: 3px solid #C88561;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #F3D3A7;
+      color: #2B2018;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      border: 2px solid #C88561;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #C88561;
+      color: #F3D3A7;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-left: auto;
+    }
+
+    .next-btn:hover {
+      background: #AA93B8;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      section, .teacher-instructions { padding: 22px; }
+      .outcome-item { flex-direction: column; }
+      .nav-buttons {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .next-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="week-label">Week 2</div>
+      <h1>Retrieving Data (SELECT and WHERE)</h1>
+      <div class="subtitle">How to ask questions from a database</div>
+    </header>
+
+    <!-- Welcome -->
+    <section>
+      <h2>Welcome Back!</h2>
+      <div class="welcome">
+        <p>Last week, you created your first database table and added records. Now it's time to <strong>ask questions</strong> from that data.</p>
+        <p>Every time you search for a friend on Facebook, filter products on Shopee, or check your grades online — a <strong>SELECT</strong> query is working behind the scenes.</p>
+        <p>This week, you'll learn how to retrieve exactly the data you need using two of the most important SQL commands: <strong>SELECT</strong> and <strong>WHERE</strong>.</p>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes (Bloom's Taxonomy HOTS) -->
+    <section>
+      <h2>Learning Outcomes</h2>
+      <p>By the end of this week, you will be able to:</p>
+
+      <div class="outcomes">
+        <h3>Higher Order Thinking Skills (HOTS)</h3>
+
+        <div class="outcome-item">
+          <span class="bloom-tag analyze">ANALYZE</span>
+          <span class="outcome-text">Differentiate between retrieving all data (<code>SELECT *</code>) and retrieving specific data (<code>SELECT column</code> + <code>WHERE</code>) by comparing their results in real databases.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag apply">APPLY</span>
+          <span class="outcome-text">Use SELECT and WHERE to answer real-world questions — such as finding students in a specific grade, section, or age group.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag evaluate">EVALUATE</span>
+          <span class="outcome-text">Assess which query produces the most accurate and useful result for a given real-life scenario (e.g., "Who are the Grade 10 females in Section A?").</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- What is SELECT -->
+    <section>
+      <h2>What is SELECT?</h2>
+      <p><strong>SELECT</strong> is the SQL command used to <strong>retrieve data</strong> from a database. It's how you ask a question.</p>
+
+      <h3>The Basic Form</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> column_name <span class="keyword">FROM</span> table_name;</pre>
+      </div>
+
+      <h3>Retrieve Everything</h3>
+      <p>Use the asterisk <code>*</code> to get all columns:</p>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Retrieve Specific Columns</h3>
+      <p>List only the columns you want:</p>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <div class="tip">
+        <strong>Fewer columns = faster query.</strong> Real apps only select the columns they need.
+      </div>
+    </section>
+
+    <!-- What is WHERE -->
+    <section>
+      <h2>What is WHERE?</h2>
+      <p><strong>WHERE</strong> is the SQL keyword used to <strong>filter</strong> data. It's like a sieve — only rows that match your condition pass through.</p>
+
+      <h3>Filter by one condition</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10;</pre>
+      </div>
+
+      <h3>Filter by text</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> gender = <span class="value">'F'</span>;</pre>
+      </div>
+
+      <h3>Combine two conditions with AND</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10 <span class="keyword">AND</span> gender = <span class="value">'F'</span>;</pre>
+      </div>
+
+      <h3>Use OR for either condition</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10 <span class="keyword">OR</span> grade = 11;</pre>
+      </div>
+
+      <h3>Compare numbers</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> age &gt; 15;</pre>
+      </div>
+
+      <div class="warning">
+        <strong>Remember:</strong> Text values go inside single quotes <code>'like this'</code>. Numbers do not.
+      </div>
+    </section>
+
+    <!-- Real Life Examples -->
+    <section>
+      <h2>Real-Life Examples</h2>
+
+      <div class="example-box">
+        <h3>📱 Facebook Search</h3>
+        <p>When you search a friend's name, Facebook runs something like:</p>
+        <p class="where">SELECT * FROM users WHERE name = 'Juan Dela Cruz';</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🛒 Shopee Filter</h3>
+        <p>When you filter by price or category:</p>
+        <p class="where">SELECT * FROM products WHERE price &lt; 500 AND category = 'Electronics';</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏫 School Records</h3>
+        <p>When your teacher views Grade 10 Section A:</p>
+        <p class="where">SELECT * FROM students WHERE grade = 10 AND section = 'A';</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏥 Hospital System</h3>
+        <p>When a nurse finds all patients with high fever:</p>
+        <p class="where">SELECT * FROM patients WHERE temperature &gt; 38;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏦 Banking App</h3>
+        <p>When you view transactions over ₱1000:</p>
+        <p class="where">SELECT * FROM transactions WHERE amount &gt; 1000;</p>
+      </div>
+    </section>
+
+    <!-- Key Terms -->
+    <section>
+      <h2>Key Words to Remember</h2>
+      <table>
+        <tr>
+          <th>Term</th>
+          <th>What It Means</th>
+        </tr>
+        <tr><td>SELECT</td><td>Retrieves data from a table</td></tr>
+        <tr><td>FROM</td><td>Specifies which table to look in</td></tr>
+        <tr><td>WHERE</td><td>Filters rows by a condition</td></tr>
+        <tr><td>AND</td><td>Both conditions must be true</td></tr>
+        <tr><td>OR</td><td>At least one condition must be true</td></tr>
+        <tr><td>Condition</td><td>A test — like <code>grade = 10</code> or <code>age &gt; 15</code></td></tr>
+        <tr><td>Operator</td><td>A symbol like <code>=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></td></tr>
+      </table>
+    </section>
+
+    <!-- Practice Section -->
+    <section>
+      <h2>Try It Yourself</h2>
+      <p>Open phpMyAdmin and use the <code>data_detectives</code> database. Try each query below in the SQL tab.</p>
+
+      <h3>Practice 1: See all students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Practice 2: Only Grade 10 students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10;</pre>
+      </div>
+
+      <h3>Practice 3: Only females</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade, section <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> gender = <span class="value">'F'</span>;</pre>
+      </div>
+
+      <h3>Practice 4: Grade 10 females in Section A</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10 <span class="keyword">AND</span> gender = <span class="value">'F'</span> <span class="keyword">AND</span> section = <span class="value">'A'</span>;</pre>
+      </div>
+
+      <h3>Practice 5: Students older than 15</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, age <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> age &gt; 15;</pre>
+      </div>
+
+      <h3>Practice 6: Grade 11 or Grade 12</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 11 <span class="keyword">OR</span> grade = 12;</pre>
+      </div>
+
+      <div class="tip">
+        Try changing the values and see how the results change. Experimentation is the fastest way to learn SQL.
+      </div>
+    </section>
+
+    <!-- Check Yourself -->
+    <section>
+      <h2>Check Yourself</h2>
+      <p>Before you finish, make sure you can do all of these:</p>
+      <div class="check">
+        <ul>
+          <li>I can use <code>SELECT *</code> to see all data</li>
+          <li>I can select specific columns</li>
+          <li>I can use <code>WHERE</code> to filter by one condition</li>
+          <li>I can combine conditions with <code>AND</code> and <code>OR</code></li>
+          <li>I can use comparison operators like <code>&gt;</code> and <code>&lt;</code></li>
+          <li>I can explain why SELECT and WHERE matter in real life</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Quick Check -->
+    <section>
+      <h2>Quick Check</h2>
+      <p>Answer these in your head or on paper:</p>
+      <ol>
+        <li>What does <code>SELECT *</code> do?</li>
+        <li>What does the <code>WHERE</code> keyword do?</li>
+        <li>What's the difference between <code>AND</code> and <code>OR</code>?</li>
+        <li>Why do text values go inside single quotes?</li>
+        <li>Write a query to find all Grade 10 males in Section B.</li>
+      </ol>
+    </section>
+
+    <!-- Teacher Instructions -->
+    <div class="teacher-instructions">
+      <h2>Teacher Instructions</h2>
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+        <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="week1.html" class="back-btn">&larr; Back: Week 1</a>
+      <a href="week3.html" class="next-btn">Next: Summarizing Data (COUNT, AVG, SUM) &rarr;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

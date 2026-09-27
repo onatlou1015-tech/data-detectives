@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 5 — Sorting and Limiting (ORDER BY, LIMIT)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 45px 40px;
+      text-align: center;
+    }
+
+    header .week-label {
+      color: #F3D3A7;
+      font-size: 0.95em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    header .subtitle {
+      color: #F3D3A7;
+      font-size: 1em;
+    }
+
+    /* Content sections */
+    section {
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    h3 {
+      color: #C88561;
+      font-size: 1.1em;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #2B2018;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+      color: #2B2018;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Welcome box */
+    .welcome {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Learning Outcomes box */
+    .outcomes {
+      background: #F3D3A7;
+      border: 3px solid #C88561;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 10px;
+    }
+
+    .outcomes h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.15em;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: #A7C1C3;
+      border-radius: 8px;
+      border-left: 5px solid #AA93B8;
+    }
+
+    .outcome-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bloom-tag {
+      display: inline-block;
+      background: #AA93B8;
+      color: #F3D3A7;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .bloom-tag.evaluate {
+      background: #C88561;
+    }
+
+    .bloom-tag.create {
+      background: #2B2018;
+    }
+
+    .bloom-tag.analyze {
+      background: #AA93B8;
+    }
+
+    .bloom-tag.apply {
+      background: #E1B86E;
+    }
+
+    .outcome-text {
+      color: #2B2018;
+      font-size: 0.95em;
+    }
+
+    /* Goal box */
+    .goal {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .goal ul {
+      margin-bottom: 0;
+    }
+
+    /* Code box */
+    .code-box {
+      background: #2B2018;
+      color: #F3D3A7;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      border: 2px solid #C88561;
+    }
+
+    .code-box .code-label {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .code-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #F3D3A7;
+    }
+
+    .code-box .keyword {
+      color: #E1B86E;
+      font-weight: bold;
+    }
+
+    .code-box .value {
+      color: #A7C1C3;
+    }
+
+    .code-box .comment {
+      color: #AA93B8;
+      font-style: italic;
+    }
+
+    /* Real-life examples */
+    .example-box {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 15px;
+    }
+
+    .example-box h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .example-box p {
+      margin-bottom: 6px;
+    }
+
+    .example-box .where {
+      color: #C88561;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    /* Tip box */
+    .tip {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-style: italic;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #F3D3A7;
+      border-left: 5px solid #2B2018;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.95em;
+    }
+
+    th {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #C88561;
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid #E1B86E;
+      color: #2B2018;
+    }
+
+    tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    tr:hover td {
+      background: #E1B86E;
+    }
+
+    /* Check yourself */
+    .check {
+      background: #F3D3A7;
+      border: 2px dashed #C88561;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .check ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: #C88561;
+      font-weight: bold;
+    }
+
+    /* Teacher instructions */
+    .teacher-instructions {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 30px 40px;
+    }
+
+    .teacher-instructions h2 {
+      color: #F3D3A7;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .teacher-instructions ul {
+      margin-left: 25px;
+      color: #F3D3A7;
+    }
+
+    .teacher-instructions li {
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 25px 40px;
+      background: #E1B86E;
+      border-top: 3px solid #C88561;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #F3D3A7;
+      color: #2B2018;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      border: 2px solid #C88561;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #C88561;
+      color: #F3D3A7;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-left: auto;
+    }
+
+    .next-btn:hover {
+      background: #AA93B8;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      section, .teacher-instructions { padding: 22px; }
+      .outcome-item { flex-direction: column; }
+      .nav-buttons {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .next-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="week-label">Week 5</div>
+      <h1>Sorting and Limiting (ORDER BY, LIMIT)</h1>
+      <div class="subtitle">Finding top and bottom records</div>
+    </header>
+
+    <!-- Welcome -->
+    <section>
+      <h2>Welcome Back!</h2>
+      <div class="welcome">
+        <p>Last week, you learned to group data and summarize it. Now it's time to <strong>sort</strong> and <strong>rank</strong> that data.</p>
+        <p>Real apps do this all the time: leaderboards, top-selling products, latest posts, most active users. This week, you'll learn <strong>ORDER BY</strong> and <strong>LIMIT</strong> — the tools behind every ranking and "top 10" list.</p>
+        <p>By the end of this lesson, you'll be able to answer questions like "Who scored highest?" or "Which item sells the most?" with a single query.</p>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes (Bloom's Taxonomy HOTS) -->
+    <section>
+      <h2>Learning Outcomes</h2>
+      <p>By the end of this week, you will be able to:</p>
+
+      <div class="outcomes">
+        <h3>Higher Order Thinking Skills (HOTS)</h3>
+
+        <div class="outcome-item">
+          <span class="bloom-tag apply">APPLY</span>
+          <span class="outcome-text">Use ORDER BY and LIMIT to sort and rank data in ascending or descending order to produce leaderboards and top lists.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag analyze">ANALYZE</span>
+          <span class="outcome-text">Examine how sorting direction (ASC vs DESC) and column choice affect which records appear at the top or bottom of a result set.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag evaluate">EVALUATE</span>
+          <span class="outcome-text">Judge which sorted and limited query best answers a real-world question — such as identifying top performers or best-selling items — and justify the choice.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- What is ORDER BY -->
+    <section>
+      <h2>What is ORDER BY?</h2>
+      <p><strong>ORDER BY</strong> sorts the rows of your result. You choose which column to sort by, and whether to go ascending (A→Z, small→large) or descending (Z→A, large→small).</p>
+
+      <h3>The Basic Form</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> column1, column2
+<span class="keyword">FROM</span> table
+<span class="keyword">ORDER BY</span> column <span class="keyword">ASC</span>;   <span class="comment">-- ascending (default)</span></pre>
+      </div>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> column1, column2
+<span class="keyword">FROM</span> table
+<span class="keyword">ORDER BY</span> column <span class="keyword">DESC</span>;  <span class="comment">-- descending</span></pre>
+      </div>
+
+      <div class="tip">
+        <strong>ASC</strong> is the default. If you don't write ASC or DESC, SQL assumes ASC.
+      </div>
+    </section>
+
+    <!-- Sorting by Name -->
+    <section>
+      <h2>Sorting by Name (Text)</h2>
+      <p>Text columns sort alphabetically.</p>
+
+      <h3>Students A → Z</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> name <span class="keyword">ASC</span>;</pre>
+      </div>
+
+      <h3>Students Z → A</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> name <span class="keyword">DESC</span>;</pre>
+      </div>
+    </section>
+
+    <!-- Sorting by Number -->
+    <section>
+      <h2>Sorting by Number</h2>
+      <p>Number columns sort from smallest to largest (ASC) or largest to smallest (DESC).</p>
+
+      <h3>Youngest to oldest students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, age <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> age <span class="keyword">ASC</span>;</pre>
+      </div>
+
+      <h3>Oldest to youngest students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, age <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> age <span class="keyword">DESC</span>;</pre>
+      </div>
+
+      <h3>Highest scores first</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> student_id, score <span class="keyword">FROM</span> scores
+<span class="keyword">ORDER BY</span> score <span class="keyword">DESC</span>;</pre>
+      </div>
+    </section>
+
+    <!-- What is LIMIT -->
+    <section>
+      <h2>What is LIMIT?</h2>
+      <p><strong>LIMIT</strong> restricts how many rows are returned. It's often used with ORDER BY to get the "Top N" results.</p>
+
+      <h3>Top 5 highest scores</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> student_id, score <span class="keyword">FROM</span> scores
+<span class="keyword">ORDER BY</span> score <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 5;</pre>
+      </div>
+
+      <h3>Top 3 oldest students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, age <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> age <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 3;</pre>
+      </div>
+
+      <div class="warning">
+        <strong>LIMIT without ORDER BY</strong> gives unpredictable results. Always sort first, then limit.
+      </div>
+    </section>
+
+    <!-- Sorting by Multiple Columns -->
+    <section>
+      <h2>Sorting by Multiple Columns</h2>
+      <p>You can sort by more than one column. The first column is the main sort; the second breaks ties.</p>
+
+      <h3>Sort by grade, then by name</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade, section <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> grade <span class="keyword">ASC</span>, name <span class="keyword">ASC</span>;</pre>
+      </div>
+
+      <h3>Sort by score high-to-low, then by student ID</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> student_id, score <span class="keyword">FROM</span> scores
+<span class="keyword">ORDER BY</span> score <span class="keyword">DESC</span>, student_id <span class="keyword">ASC</span>;</pre>
+      </div>
+
+      <div class="tip">
+        Think of multi-column sorting like sorting a deck of cards: first by suit, then by number.
+      </div>
+    </section>
+
+    <!-- ORDER BY with GROUP BY -->
+    <section>
+      <h2>ORDER BY with GROUP BY</h2>
+      <p>You can sort grouped results. This is how you build leaderboards of groups.</p>
+
+      <h3>Grades with the most students first</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> total
+<span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade
+<span class="keyword">ORDER BY</span> total <span class="keyword">DESC</span>;</pre>
+      </div>
+
+      <h3>Top 3 sections with the highest average age</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> section, <span class="keyword">AVG</span>(age) <span class="keyword">AS</span> avg_age
+<span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> section
+<span class="keyword">ORDER BY</span> avg_age <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 3;</pre>
+      </div>
+
+      <div class="tip">
+        Use <code>AS</code> to name your aggregate column so you can sort by it easily.
+      </div>
+    </section>
+
+    <!-- Clause Order -->
+    <section>
+      <h2>The Order of SQL Clauses</h2>
+      <p>This is the order you must write your clauses. Remembering this will save you many mistakes.</p>
+
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span>   columns
+<span class="keyword">FROM</span>     table
+<span class="keyword">WHERE</span>    condition
+<span class="keyword">GROUP BY</span> column
+<span class="keyword">ORDER BY</span> column <span class="keyword">ASC</span>|<span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span>    number;</pre>
+      </div>
+
+      <div class="warning">
+        <strong>Order matters!</strong> WHERE always before GROUP BY. GROUP BY always before ORDER BY. ORDER BY always before LIMIT.
+      </div>
+    </section>
+
+    <!-- Real Life Examples -->
+    <section>
+      <h2>Real-Life Examples</h2>
+
+      <div class="example-box">
+        <h3>📱 Social Media</h3>
+        <p>Latest posts first:</p>
+        <p class="where">SELECT * FROM posts ORDER BY date_posted DESC LIMIT 10;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🛒 Online Shopping</h3>
+        <p>Top 5 best-selling products:</p>
+        <p class="where">SELECT product_id, SUM(quantity) AS total FROM sales GROUP BY product_id ORDER BY total DESC LIMIT 5;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏫 School Records</h3>
+        <p>Top 10 students by average score:</p>
+        <p class="where">SELECT student_id, AVG(score) AS avg_score FROM scores GROUP BY student_id ORDER BY avg_score DESC LIMIT 10;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏥 Hospital System</h3>
+        <p>Most recent patient visits:</p>
+        <p class="where">SELECT * FROM visits ORDER BY visit_date DESC LIMIT 20;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏦 Banking</h3>
+        <p>Largest transactions today:</p>
+        <p class="where">SELECT * FROM transactions WHERE date = CURDATE() ORDER BY amount DESC LIMIT 5;</p>
+      </div>
+    </section>
+
+    <!-- Key Terms -->
+    <section>
+      <h2>Key Words to Remember</h2>
+      <table>
+        <tr>
+          <th>Term</th>
+          <th>What It Means</th>
+        </tr>
+        <tr><td>ORDER BY</td><td>Sorts the rows of the result</td></tr>
+        <tr><td>ASC</td><td>Ascending order — A to Z, smallest to largest</td></tr>
+        <tr><td>DESC</td><td>Descending order — Z to A, largest to smallest</td></tr>
+        <tr><td>LIMIT</td><td>Restricts how many rows are returned</td></tr>
+        <tr><td>Top N</td><td>A common pattern: ORDER BY ... DESC LIMIT N</td></tr>
+        <tr><td>Multi-column sort</td><td>Sort by one column, then another to break ties</td></tr>
+      </table>
+    </section>
+
+    <!-- Practice Section -->
+    <section>
+      <h2>Try It Yourself</h2>
+      <p>Open phpMyAdmin and use the <code>data_detectives</code> database. Try each query below in the SQL tab.</p>
+
+      <h3>Practice 1: All students sorted A → Z</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> name <span class="keyword">ASC</span>;</pre>
+      </div>
+
+      <h3>Practice 2: Top 5 highest scores</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> student_id, score <span class="keyword">FROM</span> scores
+<span class="keyword">ORDER BY</span> score <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 5;</pre>
+      </div>
+
+      <h3>Practice 3: Oldest 3 students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, age <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> age <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 3;</pre>
+      </div>
+
+      <h3>Practice 4: Count per grade, most first</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> total
+<span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade
+<span class="keyword">ORDER BY</span> total <span class="keyword">DESC</span>;</pre>
+      </div>
+
+      <h3>Practice 5: Top 3 sections by average age</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> section, <span class="keyword">AVG</span>(age) <span class="keyword">AS</span> avg_age
+<span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> section
+<span class="keyword">ORDER BY</span> avg_age <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 3;</pre>
+      </div>
+
+      <h3>Practice 6: Sort by grade then name</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> name, grade, section <span class="keyword">FROM</span> students
+<span class="keyword">ORDER BY</span> grade <span class="keyword">ASC</span>, name <span class="keyword">ASC</span>;</pre>
+      </div>
+
+      <div class="tip">
+        Try combining WHERE, GROUP BY, ORDER BY, and LIMIT in one query. That's real analyst work.
+      </div>
+    </section>
+
+    <!-- Check Yourself -->
+    <section>
+      <h2>Check Yourself</h2>
+      <p>Before you finish, make sure you can do all of these:</p>
+      <div class="check">
+        <ul>
+          <li>I can use <code>ORDER BY</code> to sort rows</li>
+          <li>I know the difference between <code>ASC</code> and <code>DESC</code></li>
+          <li>I can use <code>LIMIT</code> to restrict rows</li>
+          <li>I can build a "Top N" query</li>
+          <li>I can sort by multiple columns</li>
+          <li>I can combine <code>GROUP BY</code> with <code>ORDER BY</code></li>
+          <li>I know the correct order of SQL clauses</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Quick Check -->
+    <section>
+      <h2>Quick Check</h2>
+      <p>Answer these in your head or on paper:</p>
+      <ol>
+        <li>What does <code>ORDER BY</code> do?</li>
+        <li>What's the difference between <code>ASC</code> and <code>DESC</code>?</li>
+        <li>What does <code>LIMIT</code> do?</li>
+        <li>Why should you always use ORDER BY before LIMIT?</li>
+        <li>Write a query to find the 5 youngest students.</li>
+      </ol>
+    </section>
+
+    <!-- Teacher Instructions -->
+    <div class="teacher-instructions">
+      <h2>Teacher Instructions</h2>
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+        <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="week4.html" class="back-btn">&larr; Back: Week 4</a>
+      <a href="week6.html" class="next-btn">Next: Connecting Tables (Simple JOIN) &rarr;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

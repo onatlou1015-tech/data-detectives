@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 4 — Grouping Data (GROUP BY)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 45px 40px;
+      text-align: center;
+    }
+
+    header .week-label {
+      color: #F3D3A7;
+      font-size: 0.95em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    header .subtitle {
+      color: #F3D3A7;
+      font-size: 1em;
+    }
+
+    /* Content sections */
+    section {
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    h3 {
+      color: #C88561;
+      font-size: 1.1em;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #2B2018;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+      color: #2B2018;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Welcome box */
+    .welcome {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Learning Outcomes box */
+    .outcomes {
+      background: #F3D3A7;
+      border: 3px solid #C88561;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 10px;
+    }
+
+    .outcomes h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.15em;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: #A7C1C3;
+      border-radius: 8px;
+      border-left: 5px solid #AA93B8;
+    }
+
+    .outcome-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bloom-tag {
+      display: inline-block;
+      background: #AA93B8;
+      color: #F3D3A7;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .bloom-tag.evaluate {
+      background: #C88561;
+    }
+
+    .bloom-tag.create {
+      background: #2B2018;
+    }
+
+    .bloom-tag.analyze {
+      background: #AA93B8;
+    }
+
+    .bloom-tag.apply {
+      background: #E1B86E;
+    }
+
+    .outcome-text {
+      color: #2B2018;
+      font-size: 0.95em;
+    }
+
+    /* Goal box */
+    .goal {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .goal ul {
+      margin-bottom: 0;
+    }
+
+    /* Code box */
+    .code-box {
+      background: #2B2018;
+      color: #F3D3A7;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      border: 2px solid #C88561;
+    }
+
+    .code-box .code-label {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .code-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #F3D3A7;
+    }
+
+    .code-box .keyword {
+      color: #E1B86E;
+      font-weight: bold;
+    }
+
+    .code-box .value {
+      color: #A7C1C3;
+    }
+
+    .code-box .comment {
+      color: #AA93B8;
+      font-style: italic;
+    }
+
+    /* Real-life examples */
+    .example-box {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 15px;
+    }
+
+    .example-box h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .example-box p {
+      margin-bottom: 6px;
+    }
+
+    .example-box .where {
+      color: #C88561;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    /* Tip box */
+    .tip {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-style: italic;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #F3D3A7;
+      border-left: 5px solid #2B2018;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.95em;
+    }
+
+    th {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #C88561;
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid #E1B86E;
+      color: #2B2018;
+    }
+
+    tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    tr:hover td {
+      background: #E1B86E;
+    }
+
+    /* Check yourself */
+    .check {
+      background: #F3D3A7;
+      border: 2px dashed #C88561;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .check ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: #C88561;
+      font-weight: bold;
+    }
+
+    /* Teacher instructions */
+    .teacher-instructions {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 30px 40px;
+    }
+
+    .teacher-instructions h2 {
+      color: #F3D3A7;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .teacher-instructions ul {
+      margin-left: 25px;
+      color: #F3D3A7;
+    }
+
+    .teacher-instructions li {
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 25px 40px;
+      background: #E1B86E;
+      border-top: 3px solid #C88561;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #F3D3A7;
+      color: #2B2018;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      border: 2px solid #C88561;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #C88561;
+      color: #F3D3A7;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-left: auto;
+    }
+
+    .next-btn:hover {
+      background: #AA93B8;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      section, .teacher-instructions { padding: 22px; }
+      .outcome-item { flex-direction: column; }
+      .nav-buttons {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .next-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="week-label">Week 4</div>
+      <h1>Grouping Data (GROUP BY)</h1>
+      <div class="subtitle">Comparing groups in data</div>
+    </header>
+
+    <!-- Welcome -->
+    <section>
+      <h2>Welcome Back!</h2>
+      <div class="welcome">
+        <p>Last week, you learned to summarize <strong>all</strong> the data with COUNT, AVG, and SUM. But what if you want to summarize <strong>by group</strong>?</p>
+        <p>For example: "How many students are in <em>each</em> grade?" or "What's the average age <em>per section</em>?" That's where <strong>GROUP BY</strong> comes in.</p>
+        <p>By the end of this lesson, you'll be able to break data into groups and compare them — a skill real analysts use every day.</p>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes (Bloom's Taxonomy HOTS) -->
+    <section>
+      <h2>Learning Outcomes</h2>
+      <p>By the end of this week, you will be able to:</p>
+
+      <div class="outcomes">
+        <h3>Higher Order Thinking Skills (HOTS)</h3>
+
+        <div class="outcome-item">
+          <span class="bloom-tag analyze">ANALYZE</span>
+          <span class="outcome-text">Examine how GROUP BY partitions data into categories and how aggregate functions behave differently per group.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag evaluate">EVALUATE</span>
+          <span class="outcome-text">Compare grouped results across sections, grades, or categories to draw conclusions about patterns in real-world data.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag create">CREATE</span>
+          <span class="outcome-text">Construct SQL queries that combine GROUP BY with WHERE and multiple aggregates to answer complex questions about school data.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- What is GROUP BY -->
+    <section>
+      <h2>What is GROUP BY?</h2>
+      <p><strong>GROUP BY</strong> groups rows that have the same value in a column. Then you can apply an aggregate function to each group.</p>
+
+      <p>Think of it like sorting your classmates into piles:</p>
+      <ul>
+        <li>All Grade 10 students go in one pile</li>
+        <li>All Grade 11 students go in another pile</li>
+        <li>All Grade 12 students go in a third pile</li>
+      </ul>
+      <p>Then you count how many are in each pile.</p>
+
+      <h3>The Basic Form</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> column, <span class="keyword">AGGREGATE</span>(column)
+<span class="keyword">FROM</span> table
+<span class="keyword">GROUP BY</span> column;</pre>
+      </div>
+
+      <div class="tip">
+        <strong>Rule to remember:</strong> Every column in SELECT must either be in GROUP BY or inside an aggregate function.
+      </div>
+    </section>
+
+    <!-- COUNT with GROUP BY -->
+    <section>
+      <h2>COUNT with GROUP BY</h2>
+      <p>Count how many rows are in each group.</p>
+
+      <h3>Count students per grade</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <h3>Count students per section</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> section, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> section;</pre>
+      </div>
+
+      <h3>Count males and females</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> gender, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> gender;</pre>
+      </div>
+    </section>
+
+    <!-- AVG with GROUP BY -->
+    <section>
+      <h2>AVG with GROUP BY</h2>
+      <p>Find the average value for each group.</p>
+
+      <h3>Average age per grade</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">AVG</span>(age) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <h3>Average score per subject</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> subject_id, <span class="keyword">AVG</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">GROUP BY</span> subject_id;</pre>
+      </div>
+    </section>
+
+    <!-- SUM with GROUP BY -->
+    <section>
+      <h2>SUM with GROUP BY</h2>
+      <p>Find the total value for each group.</p>
+
+      <h3>Total quantity sold per item</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> item_id, <span class="keyword">SUM</span>(quantity) <span class="keyword">FROM</span> canteen_sales
+<span class="keyword">GROUP BY</span> item_id;</pre>
+      </div>
+
+      <h3>Total score per student</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> student_id, <span class="keyword">SUM</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">GROUP BY</span> student_id;</pre>
+      </div>
+    </section>
+
+    <!-- GROUP BY with WHERE -->
+    <section>
+      <h2>GROUP BY with WHERE</h2>
+      <p>You can filter rows <em>before</em> grouping them using WHERE.</p>
+
+      <h3>Count females per grade (only females)</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> gender = <span class="value">'F'</span>
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <h3>Average score per subject (only passing scores)</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> subject_id, <span class="keyword">AVG</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">WHERE</span> score &gt;= 75
+<span class="keyword">GROUP BY</span> subject_id;</pre>
+      </div>
+
+      <div class="warning">
+        <strong>WHERE goes BEFORE GROUP BY.</strong> WHERE filters rows. GROUP BY organizes what's left.
+      </div>
+    </section>
+
+    <!-- Multiple Aggregates -->
+    <section>
+      <h2>Multiple Aggregates in One Query</h2>
+      <p>You can combine several aggregates to get a full summary of each group.</p>
+
+      <h3>Grade report with multiple aggregates</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade,
+       <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> total_students,
+       <span class="keyword">AVG</span>(age) <span class="keyword">AS</span> avg_age,
+       <span class="keyword">MIN</span>(age) <span class="keyword">AS</span> youngest,
+       <span class="keyword">MAX</span>(age) <span class="keyword">AS</span> oldest
+<span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <div class="tip">
+        Use <code>AS</code> to give your result columns friendly names — this makes reports much easier to read.
+      </div>
+    </section>
+
+    <!-- Real Life Examples -->
+    <section>
+      <h2>Real-Life Examples</h2>
+
+      <div class="example-box">
+        <h3>📱 Social Media</h3>
+        <p>How many posts does each user have?</p>
+        <p class="where">SELECT user_id, COUNT(*) FROM posts GROUP BY user_id;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🛒 Online Shopping</h3>
+        <p>What's the total sales per product category?</p>
+        <p class="where">SELECT category, SUM(price * quantity) FROM sales GROUP BY category;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏫 School Records</h3>
+        <p>How many students per section?</p>
+        <p class="where">SELECT section, COUNT(*) FROM students GROUP BY section;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏥 Hospital System</h3>
+        <p>Average temperature per ward?</p>
+        <p class="where">SELECT ward, AVG(temperature) FROM patients GROUP BY ward;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏦 Banking</h3>
+        <p>Total deposits per branch?</p>
+        <p class="where">SELECT branch, SUM(amount) FROM transactions WHERE type = 'Deposit' GROUP BY branch;</p>
+      </div>
+    </section>
+
+    <!-- Key Terms -->
+    <section>
+      <h2>Key Words to Remember</h2>
+      <table>
+        <tr>
+          <th>Term</th>
+          <th>What It Means</th>
+        </tr>
+        <tr><td>GROUP BY</td><td>Groups rows with the same value in a column</td></tr>
+        <tr><td>Aggregate</td><td>A function that summarizes many rows (COUNT, AVG, SUM, etc.)</td></tr>
+        <tr><td>Group</td><td>A set of rows that share the same value</td></tr>
+        <tr><td>WHERE vs GROUP BY</td><td>WHERE filters rows; GROUP BY organizes them</td></tr>
+        <tr><td>AS</td><td>Renames a result column for readability</td></tr>
+      </table>
+    </section>
+
+    <!-- Practice Section -->
+    <section>
+      <h2>Try It Yourself</h2>
+      <p>Open phpMyAdmin and use the <code>data_detectives</code> database. Try each query below in the SQL tab.</p>
+
+      <h3>Practice 1: Count students per grade</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <h3>Practice 2: Count students per section</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> section, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> section;</pre>
+      </div>
+
+      <h3>Practice 3: Average age per grade</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade, <span class="keyword">AVG</span>(age) <span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <h3>Practice 4: Count females per section</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> section, <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> gender = <span class="value">'F'</span>
+<span class="keyword">GROUP BY</span> section;</pre>
+      </div>
+
+      <h3>Practice 5: Average score per subject</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> subject_id, <span class="keyword">AVG</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">GROUP BY</span> subject_id;</pre>
+      </div>
+
+      <h3>Practice 6: Multiple aggregates per grade</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> grade,
+       <span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> students,
+       <span class="keyword">AVG</span>(age) <span class="keyword">AS</span> avg_age,
+       <span class="keyword">MAX</span>(age) <span class="keyword">AS</span> oldest
+<span class="keyword">FROM</span> students
+<span class="keyword">GROUP BY</span> grade;</pre>
+      </div>
+
+      <div class="tip">
+        Try adding WHERE to any of these queries to filter before grouping. Experiment freely.
+      </div>
+    </section>
+
+    <!-- Check Yourself -->
+    <section>
+      <h2>Check Yourself</h2>
+      <p>Before you finish, make sure you can do all of these:</p>
+      <div class="check">
+        <ul>
+          <li>I can use <code>GROUP BY</code> to group rows</li>
+          <li>I can combine <code>GROUP BY</code> with <code>COUNT()</code></li>
+          <li>I can combine <code>GROUP BY</code> with <code>AVG()</code> and <code>SUM()</code></li>
+          <li>I can use <code>WHERE</code> before <code>GROUP BY</code></li>
+          <li>I can use multiple aggregates in one query</li>
+          <li>I can explain why GROUP BY matters in real life</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Quick Check -->
+    <section>
+      <h2>Quick Check</h2>
+      <p>Answer these in your head or on paper:</p>
+      <ol>
+        <li>What does <code>GROUP BY</code> do?</li>
+        <li>Where does <code>WHERE</code> go in a query with <code>GROUP BY</code>?</li>
+        <li>Why must every column in SELECT be in GROUP BY or an aggregate?</li>
+        <li>Write a query to count students per section.</li>
+        <li>Write a query to find the average age per grade.</li>
+      </ol>
+    </section>
+
+    <!-- Teacher Instructions -->
+    <div class="teacher-instructions">
+      <h2>Teacher Instructions</h2>
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+        <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="week3.html" class="back-btn">&larr; Back: Week 3</a>
+      <a href="week5.html" class="next-btn">Next: Sorting and Limiting (ORDER BY, LIMIT) &rarr;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

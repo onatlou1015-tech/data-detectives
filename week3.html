@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 3 — Summarizing Data (COUNT, AVG, SUM)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 45px 40px;
+      text-align: center;
+    }
+
+    header .week-label {
+      color: #F3D3A7;
+      font-size: 0.95em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    header .subtitle {
+      color: #F3D3A7;
+      font-size: 1em;
+    }
+
+    /* Content sections */
+    section {
+      padding: 30px 40px;
+      border-bottom: 1px solid #E1B86E;
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    h2 {
+      color: #2B2018;
+      font-size: 1.4em;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #C88561;
+    }
+
+    h3 {
+      color: #C88561;
+      font-size: 1.1em;
+      margin: 20px 0 10px;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: #2B2018;
+    }
+
+    ul, ol {
+      margin: 10px 0 15px 25px;
+      color: #2B2018;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Welcome box */
+    .welcome {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 18px 22px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Learning Outcomes box */
+    .outcomes {
+      background: #F3D3A7;
+      border: 3px solid #C88561;
+      border-radius: 12px;
+      padding: 22px 26px;
+      margin-top: 10px;
+    }
+
+    .outcomes h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.15em;
+    }
+
+    .outcome-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: #A7C1C3;
+      border-radius: 8px;
+      border-left: 5px solid #AA93B8;
+    }
+
+    .outcome-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .bloom-tag {
+      display: inline-block;
+      background: #AA93B8;
+      color: #F3D3A7;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      margin-top: 3px;
+    }
+
+    .bloom-tag.evaluate {
+      background: #C88561;
+    }
+
+    .bloom-tag.create {
+      background: #2B2018;
+    }
+
+    .bloom-tag.analyze {
+      background: #AA93B8;
+    }
+
+    .bloom-tag.apply {
+      background: #E1B86E;
+    }
+
+    .outcome-text {
+      color: #2B2018;
+      font-size: 0.95em;
+    }
+
+    /* Goal box */
+    .goal {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .goal ul {
+      margin-bottom: 0;
+    }
+
+    /* Code box */
+    .code-box {
+      background: #2B2018;
+      color: #F3D3A7;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      border: 2px solid #C88561;
+    }
+
+    .code-box .code-label {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .code-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      color: #F3D3A7;
+    }
+
+    .code-box .keyword {
+      color: #E1B86E;
+      font-weight: bold;
+    }
+
+    .code-box .value {
+      color: #A7C1C3;
+    }
+
+    .code-box .comment {
+      color: #AA93B8;
+      font-style: italic;
+    }
+
+    /* Real-life examples */
+    .example-box {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 15px;
+    }
+
+    .example-box h3 {
+      color: #2B2018;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .example-box p {
+      margin-bottom: 6px;
+    }
+
+    .example-box .where {
+      color: #C88561;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    /* Tip box */
+    .tip {
+      background: #A7C1C3;
+      border-left: 5px solid #C88561;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-style: italic;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #F3D3A7;
+      border-left: 5px solid #2B2018;
+      padding: 14px 20px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 0.95em;
+    }
+
+    th {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #C88561;
+    }
+
+    td {
+      padding: 10px 14px;
+      border: 1px solid #E1B86E;
+      color: #2B2018;
+    }
+
+    tr:nth-child(even) td {
+      background: #F3D3A7;
+    }
+
+    tr:hover td {
+      background: #E1B86E;
+    }
+
+    /* Check yourself */
+    .check {
+      background: #F3D3A7;
+      border: 2px dashed #C88561;
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 10px;
+    }
+
+    .check ul {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .check li::before {
+      content: "☐ ";
+      color: #C88561;
+      font-weight: bold;
+    }
+
+    /* Teacher instructions */
+    .teacher-instructions {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 30px 40px;
+    }
+
+    .teacher-instructions h2 {
+      color: #F3D3A7;
+      border-bottom: 2px solid #C88561;
+    }
+
+    .teacher-instructions ul {
+      margin-left: 25px;
+      color: #F3D3A7;
+    }
+
+    .teacher-instructions li {
+      margin-bottom: 10px;
+      color: #F3D3A7;
+    }
+
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 25px 40px;
+      background: #E1B86E;
+      border-top: 3px solid #C88561;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      display: inline-block;
+      background: #F3D3A7;
+      color: #2B2018;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      border: 2px solid #C88561;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: #C88561;
+      color: #F3D3A7;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      margin-left: auto;
+    }
+
+    .next-btn:hover {
+      background: #AA93B8;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5em; }
+      section, .teacher-instructions { padding: 22px; }
+      .outcome-item { flex-direction: column; }
+      .nav-buttons {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .next-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header>
+      <div class="week-label">Week 3</div>
+      <h1>Summarizing Data (COUNT, AVG, SUM)</h1>
+      <div class="subtitle">Turning raw data into insights</div>
+    </header>
+
+    <!-- Welcome -->
+    <section>
+      <h2>Welcome Back!</h2>
+      <div class="welcome">
+        <p>Last week, you learned to <strong>retrieve</strong> specific data using SELECT and WHERE. But what if you want to know <strong>how many</strong> students are in Grade 10? Or the <strong>average</strong> score of a class?</p>
+        <p>That's where <strong>aggregate functions</strong> come in — COUNT, AVG, SUM, MIN, and MAX. These tools turn long lists of data into short, meaningful numbers that help people make decisions.</p>
+        <p>By the end of this lesson, you'll be able to answer real questions like "How many students passed?" and "What's the highest score?" with one simple query.</p>
+      </div>
+    </section>
+
+    <!-- Learning Outcomes (Bloom's Taxonomy HOTS) -->
+    <section>
+      <h2>Learning Outcomes</h2>
+      <p>By the end of this week, you will be able to:</p>
+
+      <div class="outcomes">
+        <h3>Higher Order Thinking Skills (HOTS)</h3>
+
+        <div class="outcome-item">
+          <span class="bloom-tag analyze">ANALYZE</span>
+          <span class="outcome-text">Examine how aggregate functions (COUNT, AVG, SUM, MIN, MAX) transform raw data into meaningful summaries by comparing outputs from real queries.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag evaluate">EVALUATE</span>
+          <span class="outcome-text">Interpret aggregate results to draw conclusions about real-life scenarios — such as identifying which section has the highest average age or how many students are in each grade.</span>
+        </div>
+
+        <div class="outcome-item">
+          <span class="bloom-tag create">CREATE</span>
+          <span class="outcome-text">Construct SQL queries that combine aggregate functions with WHERE to answer specific real-world questions from the school database.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- What are Aggregate Functions -->
+    <section>
+      <h2>What are Aggregate Functions?</h2>
+      <p><strong>Aggregate functions</strong> are SQL tools that take many rows and return <strong>one summary value</strong>. They help you answer questions like:</p>
+      <ul>
+        <li>How many students are in Grade 10?</li>
+        <li>What is the average score?</li>
+        <li>What is the total quantity sold?</li>
+        <li>Who has the highest score?</li>
+      </ul>
+
+      <h3>The Five Main Aggregates</h3>
+      <table>
+        <tr>
+          <th>Function</th>
+          <th>What It Does</th>
+          <th>Example</th>
+        </tr>
+        <tr><td><strong>COUNT()</strong></td><td>Counts the number of rows</td><td>How many students?</td></tr>
+        <tr><td><strong>AVG()</strong></td><td>Calculates the average</td><td>Average age?</td></tr>
+        <tr><td><strong>SUM()</strong></td><td>Adds up all values</td><td>Total sales?</td></tr>
+        <tr><td><strong>MIN()</strong></td><td>Finds the smallest value</td><td>Youngest student?</td></tr>
+        <tr><td><strong>MAX()</strong></td><td>Finds the largest value</td><td>Highest score?</td></tr>
+      </table>
+
+      <div class="tip">
+        Aggregate functions return one row — a summary of all the data you asked about.
+      </div>
+    </section>
+
+    <!-- COUNT -->
+    <section>
+      <h2>COUNT: How Many?</h2>
+      <p><strong>COUNT()</strong> counts how many rows match your query. It's the most common aggregate function.</p>
+
+      <h3>Count all students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Count students in Grade 10</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10;</pre>
+      </div>
+
+      <h3>Count females in Section A</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> gender = <span class="value">'F'</span> <span class="keyword">AND</span> section = <span class="value">'A'</span>;</pre>
+      </div>
+
+      <div class="tip">
+        <strong>COUNT(*)</strong> counts all rows. <strong>COUNT(column)</strong> counts only non-empty values in that column.
+      </div>
+    </section>
+
+    <!-- AVG -->
+    <section>
+      <h2>AVG: What's the Average?</h2>
+      <p><strong>AVG()</strong> calculates the average (mean) of a numeric column.</p>
+
+      <h3>Average age of all students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(age) <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Average age of Grade 10 students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(age) <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10;</pre>
+      </div>
+
+      <h3>Average score in a subject</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">WHERE</span> subject_id = 1;</pre>
+      </div>
+
+      <div class="tip">
+        AVG works only on <strong>numbers</strong>. Don't try to average names or text!
+      </div>
+    </section>
+
+    <!-- SUM -->
+    <section>
+      <h2>SUM: What's the Total?</h2>
+      <p><strong>SUM()</strong> adds up all values in a numeric column.</p>
+
+      <h3>Total quantity of items sold</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">SUM</span>(quantity) <span class="keyword">FROM</span> canteen_sales;</pre>
+      </div>
+
+      <h3>Total sales for one item</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">SUM</span>(quantity) <span class="keyword">FROM</span> canteen_sales
+<span class="keyword">WHERE</span> item_id = 3;</pre>
+      </div>
+
+      <h3>Total score of one student</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">SUM</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">WHERE</span> student_id = 1;</pre>
+      </div>
+    </section>
+
+    <!-- MIN and MAX -->
+    <section>
+      <h2>MIN and MAX: Smallest and Largest</h2>
+      <p><strong>MIN()</strong> finds the smallest value. <strong>MAX()</strong> finds the largest.</p>
+
+      <h3>Youngest and oldest student</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">MIN</span>(age) <span class="keyword">FROM</span> students;
+<span class="keyword">SELECT</span> <span class="keyword">MAX</span>(age) <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Highest and lowest score</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">MAX</span>(score) <span class="keyword">FROM</span> scores;
+<span class="keyword">SELECT</span> <span class="keyword">MIN</span>(score) <span class="keyword">FROM</span> scores;</pre>
+      </div>
+
+      <div class="tip">
+        You can combine multiple aggregates in one query — like <code>MIN(age), MAX(age)</code> — to get several answers at once.
+      </div>
+    </section>
+
+    <!-- Real Life Examples -->
+    <section>
+      <h2>Real-Life Examples</h2>
+
+      <div class="example-box">
+        <h3>📱 Social Media</h3>
+        <p>How many likes did your last post get?</p>
+        <p class="where">SELECT COUNT(*) FROM likes WHERE post_id = 42;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🛒 Online Shopping</h3>
+        <p>What's the average price of items in your cart?</p>
+        <p class="where">SELECT AVG(price) FROM cart_items WHERE cart_id = 7;</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏫 School Records</h3>
+        <p>How many students are in Grade 10 Section A?</p>
+        <p class="where">SELECT COUNT(*) FROM students WHERE grade = 10 AND section = 'A';</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏥 Hospital System</h3>
+        <p>What's the average patient temperature today?</p>
+        <p class="where">SELECT AVG(temperature) FROM patients WHERE visit_date = CURDATE();</p>
+      </div>
+
+      <div class="example-box">
+        <h3>🏦 Banking</h3>
+        <p>What's the total amount of deposits made today?</p>
+        <p class="where">SELECT SUM(amount) FROM transactions WHERE type = 'Deposit' AND date = CURDATE();</p>
+      </div>
+    </section>
+
+    <!-- Key Terms -->
+    <section>
+      <h2>Key Words to Remember</h2>
+      <table>
+        <tr>
+          <th>Term</th>
+          <th>What It Means</th>
+        </tr>
+        <tr><td>Aggregate Function</td><td>A function that summarizes many rows into one value</td></tr>
+        <tr><td>COUNT()</td><td>Counts rows</td></tr>
+        <tr><td>AVG()</td><td>Calculates the average</td></tr>
+        <tr><td>SUM()</td><td>Adds up values</td></tr>
+        <tr><td>MIN()</td><td>Finds the smallest value</td></tr>
+        <tr><td>MAX()</td><td>Finds the largest value</td></tr>
+        <tr><td>Summary</td><td>A single number that represents many rows</td></tr>
+      </table>
+    </section>
+
+    <!-- Practice Section -->
+    <section>
+      <h2>Try It Yourself</h2>
+      <p>Open phpMyAdmin and use the <code>data_detectives</code> database. Try each query below in the SQL tab.</p>
+
+      <h3>Practice 1: Count all students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Practice 2: Count Grade 10 students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> students
+<span class="keyword">WHERE</span> grade = 10;</pre>
+      </div>
+
+      <h3>Practice 3: Average age of all students</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(age) <span class="keyword">FROM</span> students;</pre>
+      </div>
+
+      <h3>Practice 4: Highest score in the whole database</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">MAX</span>(score) <span class="keyword">FROM</span> scores;</pre>
+      </div>
+
+      <h3>Practice 5: Total quantity sold</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">SUM</span>(quantity) <span class="keyword">FROM</span> canteen_sales;</pre>
+      </div>
+
+      <h3>Practice 6: Average score of one student</h3>
+      <div class="code-box">
+        <span class="code-label">SQL</span>
+        <pre><span class="keyword">SELECT</span> <span class="keyword">AVG</span>(score) <span class="keyword">FROM</span> scores
+<span class="keyword">WHERE</span> student_id = 1;</pre>
+      </div>
+
+      <div class="tip">
+        Combine multiple aggregates in one query to get several answers at once — like <code>SELECT COUNT(*), AVG(age), MAX(age) FROM students;</code>
+      </div>
+    </section>
+
+    <!-- Check Yourself -->
+    <section>
+      <h2>Check Yourself</h2>
+      <p>Before you finish, make sure you can do all of these:</p>
+      <div class="check">
+        <ul>
+          <li>I can use <code>COUNT()</code> to count rows</li>
+          <li>I can use <code>AVG()</code> to find an average</li>
+          <li>I can use <code>SUM()</code> to add up values</li>
+          <li>I can use <code>MIN()</code> and <code>MAX()</code> to find extremes</li>
+          <li>I can combine aggregates with <code>WHERE</code> to filter</li>
+          <li>I can explain why summaries matter in real life</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Quick Check -->
+    <section>
+      <h2>Quick Check</h2>
+      <p>Answer these in your head or on paper:</p>
+      <ol>
+        <li>What does <code>COUNT(*)</code> do?</li>
+        <li>What does <code>AVG()</code> do?</li>
+        <li>What's the difference between <code>SUM()</code> and <code>COUNT()</code>?</li>
+        <li>When would you use <code>MAX()</code> in real life?</li>
+        <li>Write a query to find the average age of Grade 11 students.</li>
+      </ol>
+    </section>
+
+    <!-- Teacher Instructions -->
+    <div class="teacher-instructions">
+      <h2>Teacher Instructions</h2>
+      <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+        <li>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+        <li>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</li>
+      </ul>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-buttons">
+      <a href="week2.html" class="back-btn">&larr; Back: Week 2</a>
+      <a href="week4.html" class="next-btn">Next: Grouping Data (GROUP BY) &rarr;</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Detectives — SQL Unit Index</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #E5E5E5;
+      color: #2B2018;
+      line-height: 1.7;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #F3D3A7;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(43, 32, 24, 0.25);
+      overflow: hidden;
+      border: 1px solid #E1B86E;
+    }
+
+    /* Header */
+    header {
+      background: #AA93B8;
+      color: #F3D3A7;
+      padding: 50px 40px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.4em;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      color: #F3D3A7;
+    }
+
+    header p {
+      font-size: 1.1em;
+      color: #F3D3A7;
+    }
+
+    /* Introduction */
+    .intro {
+      padding: 35px 40px;
+      background: #A7C1C3;
+      border-bottom: 3px solid #C88561;
+    }
+
+    .intro h2 {
+      color: #2B2018;
+      font-size: 1.5em;
+      margin-bottom: 15px;
+    }
+
+    .intro p {
+      margin-bottom: 12px;
+      color: #2B2018;
+      font-size: 1.05em;
+    }
+
+    .intro .highlight {
+      background: #F3D3A7;
+      border-left: 4px solid #C88561;
+      padding: 12px 18px;
+      border-radius: 6px;
+      margin-top: 15px;
+      font-style: italic;
+      color: #2B2018;
+    }
+
+    /* Topics Section */
+    .topics {
+      padding: 40px;
+      background: #F3D3A7;
+    }
+
+    .topics h2 {
+      text-align: center;
+      color: #2B2018;
+      font-size: 1.6em;
+      margin-bottom: 30px;
+    }
+
+    /* Each Topic Box */
+    .topic-box {
+      background: #F3D3A7;
+      border: 2px solid #E1B86E;
+      border-radius: 12px;
+      padding: 22px 25px;
+      margin-bottom: 18px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topic-box:hover {
+      border-color: #C88561;
+      box-shadow: 0 8px 20px rgba(200, 133, 97, 0.25);
+      transform: translateY(-3px);
+      background: #E1B86E;
+    }
+
+    .topic-number {
+      background: #AA93B8;
+      color: #F3D3A7;
+      min-width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4em;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .topic-content {
+      flex-grow: 1;
+    }
+
+    .topic-content h3 {
+      color: #2B2018;
+      font-size: 1.15em;
+      margin-bottom: 5px;
+    }
+
+    .topic-content p {
+      color: #C88561;
+      font-size: 0.92em;
+      margin-bottom: 10px;
+    }
+
+    .topic-link {
+      display: inline-block;
+      background: #C88561;
+      color: #F3D3A7;
+      text-decoration: none;
+      padding: 10px 22px;
+      border-radius: 25px;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .topic-link:hover {
+      background: #AA93B8;
+    }
+
+    /* Footer */
+    footer {
+      background: #AA93B8;
+      color: #F3D3A7;
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9em;
+    }
+
+    footer p {
+      color: #F3D3A7;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.7em;
+      }
+
+      .topic-box {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .topics, .intro {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>Data Detectives</h1>
+      <p>Turning Information into Insight — A 7-Week SQL Journey</p>
+    </header>
+    <script src="js/digital-clock.js"></script>
+    <script src="js/bible-verse.js"></script>
+    <!-- Introduction -->
+    <section class="intro">
+      <h2>Welcome to the Unit</h2>
+      <p>
+        In this 7-week unit, you will learn how to collect, organize, and analyze
+        data using <strong>SQL</strong> (Structured Query Language). Starting from
+        simple tables, you will progress to answering real questions with queries
+        and solving real-life problems with data.
+      </p>
+      <p>
+        By the end, you will design your own database and use SQL to find insights
+        that add value to school or community services.
+      </p>
+      <div class="highlight">
+        "Data is everywhere. The detective's job is to find the story inside it."
+      </div>
+    </section>
+
+    <!-- Topics -->
+    <section class="topics">
+      <h2>Weekly Lessons</h2>
+
+      <!-- Week 1 -->
+      <div class="topic-box">
+        <div class="topic-number">1</div>
+        <div class="topic-content">
+          <h3>Introduction to Databases</h3>
+          <p>What is a database and why do we need it?</p>
+          <a href="week1.html" class="topic-link">Introduction to Databases</a>
+        </div>
+      </div>
+
+      <!-- Week 2 -->
+      <div class="topic-box">
+        <div class="topic-number">2</div>
+        <div class="topic-content">
+          <h3>Retrieving Data (SELECT and WHERE)</h3>
+          <p>How to ask questions from a database.</p>
+          <a href="week2.html" class="topic-link">Retrieving Data (SELECT and WHERE)</a>
+        </div>
+      </div>
+
+      <!-- Week 3 -->
+      <div class="topic-box">
+        <div class="topic-number">3</div>
+        <div class="topic-content">
+          <h3>Summarizing Data (COUNT, AVG, SUM)</h3>
+          <p>Turning raw data into insights.</p>
+          <a href="week3.html" class="topic-link">Summarizing Data (COUNT, AVG, SUM)</a>
+        </div>
+      </div>
+
+      <!-- Week 4 -->
+      <div class="topic-box">
+        <div class="topic-number">4</div>
+        <div class="topic-content">
+          <h3>Grouping Data (GROUP BY)</h3>
+          <p>Comparing groups in data.</p>
+          <a href="week4.html" class="topic-link">Grouping Data (GROUP BY)</a>
+        </div>
+      </div>
+
+      <!-- Week 5 -->
+      <div class="topic-box">
+        <div class="topic-number">5</div>
+        <div class="topic-content">
+          <h3>Sorting and Limiting (ORDER BY, LIMIT)</h3>
+          <p>Finding top and bottom records.</p>
+          <a href="week5.html" class="topic-link">Sorting and Limiting (ORDER BY, LIMIT)</a>
+        </div>
+      </div>
+
+      <!-- Week 6 -->
+      <div class="topic-box">
+        <div class="topic-number">6</div>
+        <div class="topic-content">
+          <h3>Connecting Tables (Simple JOIN)</h3>
+          <p>How real databases link tables.</p>
+          <a href="week6.html" class="topic-link">Connecting Tables (Simple JOIN)</a>
+        </div>
+      </div>
+
+      <!-- Week 7 -->
+      <div class="topic-box">
+        <div class="topic-number">7</div>
+        <div class="topic-content">
+          <h3>Real-Life SQL Project</h3>
+          <p>Solving a real problem with SQL.</p>
+          <a href="week7.html" class="topic-link">Real-Life SQL Project</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>Data Detectives: Turning Information into Insight &copy; Grade 10 SQL Unit</p>
+    </footer>
+  </div>
+</body>
+</html>
